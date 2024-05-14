@@ -11,7 +11,7 @@
     "main": "index.js",
     "dependencies": {
         "@jx3box/jx3box-common": "^8.2.1",
-        "@jx3box/jx3box-emotion": "^1.2.6",
+        "@jx3box/jx3box-emotion": "^1.2.8",
         "core-js": "^3.6.4",
         "element-ui": "^2.13.1",
         "hevue-img-preview": "^5.0.0",
