@@ -336,11 +336,8 @@ export default {
             });
 
         bus.on("homework-click", data => {
-            this.postData = {
-                postId: this.id,
-                userId: data.userId,
-                ...this.postData
-            }
+            this.postData.postId = data.id;
+            this.postData.userId = data.userId;
             this.showHomeWork = true;
         })
     },
