@@ -1,4 +1,5 @@
-import JX3_EMOTION from '@jx3box/jx3box-emotion'
+import JX3_EMOTION from '@jx3box/jx3box-emotion';
+import mitt from 'mitt';
 function escapeHtml(str) {
     return str.replace(/[<>"']/g, function(match) {
       switch (match) {
@@ -18,6 +19,10 @@ async function formatContent(val) {
     return await ins._renderHTML()
 }
 
+const bus = mitt();
+
+
 export {
-    formatContent
+    formatContent,
+    bus
 }

@@ -1,3 +1,5 @@
+const path = require("path");
+
 module.exports = {
     "devServer": {
         "proxy": {
@@ -32,5 +34,20 @@ module.exports = {
                 };
                 return options
             })
+
+
+        //💖 import common less var * mixin ~
+        const types = ["vue-modules", "vue", "normal-modules", "normal"];
+        var preload_styles = [];
+        preload_styles.push(
+            path.resolve(__dirname, "./node_modules/csslab/base.less"),
+            path.resolve(__dirname, "./node_modules/@jx3box/jx3box-common/css/var.less"),
+        );
+        function addStyleResource(rule) {
+            rule.use("style-resource").loader("style-resources-loader").options({
+                patterns: preload_styles,
+            });
+        }
+        types.forEach((type) => addStyleResource(config.module.rule("less").oneOf(type)));
     }
 }

@@ -63,7 +63,7 @@
                     class="u-admin"
                     type="text"
                     size="mini"
-                    icon="el-icon-delete"
+                    icon="el-icon-attract"
                     v-if="canHide"
                     @click="hideComment()"
                     title="拉入黑洞后，仅评论者自己独自可见"
@@ -105,6 +105,7 @@
                     @click="starComment(false)"
                     >取消加精</el-button
                 >
+                <el-button class="u-admin" v-if="homework" type="text" icon="el-icon-document-checked" size="mini" @click="onHomeworkClick">批改作业</el-button>
                 <time class="u-date">
                     <i class="el-icon-time"></i>
                     {{ dataFormat(date) }}
@@ -216,6 +217,7 @@ export default {
         "commentId",
         "canAddWhite", // 是否可以添加到过滤白名单， 因为对于一般用户，它看不到非白名单的评论，所以“可以添加到白名单”的权限不要在加一次用户层面的权限判定
         "canRemoveWhite", // 是否可以从过滤白名单移除
+        "homework", // 是否为作业模式
     ],
     components: {
         Uploader,
@@ -369,6 +371,9 @@ export default {
         },
         showPreview: function (val) {
             return resolveImagePath(val);
+        },
+        onHomeworkClick() {
+            this.$emit("homework");
         },
     },
     filters: {

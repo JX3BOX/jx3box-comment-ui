@@ -72,7 +72,7 @@
                 class="u-admin"
                 type="text"
                 size="mini"
-                icon="el-icon-delete"
+                icon="el-icon-attract"
                 v-if="canHide"
                 @click="hideComment()"
                 title="拉入黑洞后，仅评论者自己独自可见"
@@ -108,6 +108,7 @@ export default {
         "userHref",
         "replyForUsername",
         "replyForUserId",
+        "homework"
     ],
     data: function () {
         return {

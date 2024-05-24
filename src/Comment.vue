@@ -4,6 +4,12 @@
             <CommentInputForm @submit="userSubmitInputForm" />
             <div class="c-comment-panel">
                 <div class="u-order">
+                    <template v-if="homework">
+                        <div class="u-homework">
+                            <img class="u-homework-icon" src="./assets/img/homework.svg" alt="">
+                            <span>作业模式</span>
+                        </div>
+                    </template>
                     <span class="u-label">排序模式：</span>
                     <el-radio-group
                         v-model="isDesc"
@@ -52,14 +58,15 @@
                         :item="item"
                         :category="category"
                         :power="commentPower"
+                        :user-href="item.userId | profileLink"
+                        :username="item.displayName"
+                        :homework="homework"
                         @deleteComment="deleteComment"
                         @setTopComment="setTopComment"
                         @setStarComment="setStarComment"
                         @setWhiteComment="setWhiteComment"
                         @setLikeComment="setLikeComment"
                         @hide="hideComment"
-                        :user-href="item.userId | profileLink"
-                        :username="item.displayName"
                     />
                 </div>
 
@@ -84,6 +91,8 @@
                 </div>
             </template>
         </el-main>
+
+        <homework v-model="showHomeWork" v-if="homework" :postType="postType" :postId="postData.postId" :client="postData.client" :userId="postData.userId"></homework>
     </el-container>
 </template>
 
@@ -94,13 +103,41 @@ import CommentInputForm from "./components/comment-input-form.vue";
 import CommentAndReply from "./components/comment-and-reply.vue";
 import { GET, POST, DELETE, PUT } from "./service";
 import { getOrderMode, setOrderMode } from "./options";
+import Homework from "@jx3box/jx3box-common-ui/src/interact/Homework.vue";
+import {bus} from "./utils";
 export default {
     name: "Comment",
-    props: ["id", "category", "normal", "order"],
+    props: {
+        id: {
+            type: [String, Number],
+            default: 0,
+        },
+        category: {
+            type: String,
+            default: "post",
+        },
+        normal: {
+            type: Boolean,
+            default: true,
+        },
+        order: {
+            type: String,
+            default: "desc",
+        },
+        homework: {
+            type: Boolean,
+            default: false,
+        },
+        postType: {
+            type: String,
+            default: "comment",
+        },
+    },
     components: {
         CommentAvatar,
         CommentAndReply,
         CommentInputForm,
+        Homework
     },
     data: function () {
         return {
@@ -120,6 +157,14 @@ export default {
             orderByLikes: false,
             openWhiteList: false,
             loading: false,
+
+            // 批改作业
+            showHomeWork: false,
+            postData: {
+                postId: 0,
+                userId: 0,
+                client: location.href.includes("origin") ? "origin" : "std",
+            }
         };
     },
     computed: {
@@ -289,6 +334,15 @@ export default {
             .finally(() => {
                 this.reloadCommentList(1);
             });
+
+        bus.on("homework-click", data => {
+            this.postData = {
+                postId: this.id,
+                userId: data.userId,
+                ...this.postData
+            }
+            this.showHomeWork = true;
+        })
     },
 };
 </script>
@@ -408,6 +462,27 @@ export default {
     }
     b {
         color: #0366d6;
+    }
+
+    .u-order {
+        display: flex;
+        align-items: center;
+    }
+
+    .u-homework {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        border: 1px solid #e6a23c;
+        color: #666;
+        padding: 2px 4px;
+        border-radius: 3px;
+        margin-right: 10px;
+    }
+
+    .u-homework-icon {
+        width: 18px;
+        height: 18px;
     }
 }
 .c-comment-emotion {

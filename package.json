@@ -1,6 +1,6 @@
 {
     "name": "@jx3box/jx3box-comment-ui",
-    "version": "1.8.8",
+    "version": "1.8.9",
     "scripts": {
         "dev": "env DEV_SERVER=true vue-cli-service serve",
         "serve": "vue-cli-service serve",
@@ -11,10 +11,14 @@
     "main": "index.js",
     "dependencies": {
         "@jx3box/jx3box-common": "^8.2.1",
+        "@jx3box/jx3box-common-ui": "^8.6.1",
         "@jx3box/jx3box-emotion": "^1.2.8",
         "core-js": "^3.6.4",
+        "csslab": "^4.0.4",
         "element-ui": "^2.13.1",
         "hevue-img-preview": "^5.0.0",
+        "mitt": "^3.0.1",
+        "style-resources-loader": "^1.5.0",
         "vue": "^2.6.11",
         "vuex": "^3.6.2"
     },

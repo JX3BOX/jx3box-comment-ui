@@ -33,6 +33,7 @@
             :can-hide="(power.is_author == 1 || power.is_editor == 1)"
             :is-like="item.is_likes == 1"
             :likes="~~item.likes"
+            :homework="homework"
             @addNewReply="addNewReply"
             @deleteComment="deleteComment"
             @setTopComment="setTopComment"
@@ -40,6 +41,7 @@
             @setLikeComment="setLikeComment"
             @setWhiteComment="setWhiteComment"
             @hide="hideComment"
+            @homework="onHomework"
         />
         <ReplyList
             :data="replyList"
@@ -59,8 +61,9 @@
 import ContentOfCommentAndReply from "./comment-and-reply-subcomponents-content.vue";
 import ReplyList from "./comment-and-reply-subcomponents-reply-list.vue";
 import { POST, DELETE, GET } from "../service";
+import {bus} from "../utils"
 export default {
-    props: ["item", "baseApi", "power", "user-href", "username"],
+    props: ["item", "baseApi", "power", "user-href", "username", "homework"],
     components: {
         ContentOfCommentAndReply,
         ReplyList
@@ -156,6 +159,9 @@ export default {
         },
         resetReply() {
             this.loadReplyList(1, 3);
+        },
+        onHomework() {
+            bus.emit("homework-click", this.item);
         }
     }
 };
