@@ -30,6 +30,12 @@
 
 <script>
 export default {
+    props: {
+        fileMaxSize: {
+            type: Number,
+            default: 10,
+        },
+    },
     data() {
         return {
             dialogImageUrl: "",
@@ -39,7 +45,7 @@ export default {
 
             acceptedExtensions: ["jpg", "jpeg", "png", "gif"],
             maxCount: 5,
-            maxSize: 2 * 1024 * 1024,
+            maxSize: this.fileMaxSize * 1024 * 1024,
         };
     },
     methods: {
