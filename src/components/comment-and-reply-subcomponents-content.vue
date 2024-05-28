@@ -105,7 +105,7 @@
                     @click="starComment(false)"
                     >取消加精</el-button
                 >
-                <el-button class="u-admin" v-if="homework" type="text" icon="el-icon-document-checked" size="mini" @click="onHomeworkClick">批改作业</el-button>
+                <el-button class="u-admin" v-if="homework && canApprove" type="text" icon="el-icon-document-checked" size="mini" @click="onHomeworkClick">批改作业</el-button>
                 <time class="u-date">
                     <i class="el-icon-time"></i>
                     {{ dataFormat(date) }}
@@ -208,6 +208,7 @@ export default {
         "canDelete",
         "canSetTop",
         "canCancelTop",
+        "canApprove",
         "canHide",
         "isLike", // 是否已点赞
         "likes", // 点赞数

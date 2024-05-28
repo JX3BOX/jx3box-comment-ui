@@ -1,5 +1,5 @@
 <template>
-    <Comment id="80317" category="post" order="desc" />
+    <Comment id="80317" category="post" order="desc" :homework="true"/>
     <!-- <Comment :id="30015" category="post" order="desc" /> -->
 </template>
 

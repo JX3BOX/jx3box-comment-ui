@@ -481,10 +481,12 @@ export default {
         align-items: center;
         gap: 5px;
         border: 1px solid #e6a23c;
+        background-color:#fefbc4;
         color: #666;
         padding: 2px 4px;
         border-radius: 3px;
         margin-right: 10px;
+        .fz(12px);
     }
 
     .u-homework-icon {
