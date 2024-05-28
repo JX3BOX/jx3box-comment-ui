@@ -61,6 +61,7 @@
                         :user-href="item.userId | profileLink"
                         :username="item.displayName"
                         :homework="homework"
+                        :post-type="postType"
                         @deleteComment="deleteComment"
                         @setTopComment="setTopComment"
                         @setStarComment="setStarComment"
@@ -93,6 +94,7 @@
         </el-main>
 
         <homework v-model="showHomeWork" v-if="homework" :postType="postType" :postId="postData.postId" :client="postData.client" :userId="postData.userId"></homework>
+        <boxcoin-records v-model="showBoxCoin" v-if="homework" :postType="postType" :postId="postData.postId" :client="postData.client"></boxcoin-records>
     </el-container>
 </template>
 
@@ -104,6 +106,7 @@ import CommentAndReply from "./components/comment-and-reply.vue";
 import { GET, POST, DELETE, PUT } from "./service";
 import { getOrderMode, setOrderMode } from "./options";
 import Homework from "@jx3box/jx3box-common-ui/src/interact/Homework.vue";
+import boxcoinRecords from "./components/boxcoin-records.vue";
 import {bus} from "./utils";
 export default {
     name: "Comment",
@@ -137,7 +140,8 @@ export default {
         CommentAvatar,
         CommentAndReply,
         CommentInputForm,
-        Homework
+        Homework,
+        boxcoinRecords
     },
     data: function () {
         return {
@@ -164,7 +168,8 @@ export default {
                 postId: 0,
                 userId: 0,
                 client: location.href.includes("origin") ? "origin" : "std",
-            }
+            },
+            showBoxCoin: false,
         };
     },
     computed: {
@@ -339,6 +344,11 @@ export default {
             this.postData.postId = data.id;
             this.postData.userId = data.userId;
             this.showHomeWork = true;
+        })
+
+        bus.on("boxcoin-click", data => {
+            this.postData.postId = data.id;
+            this.showBoxCoin = true;
         })
     },
 };

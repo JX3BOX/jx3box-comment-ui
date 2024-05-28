@@ -8,6 +8,10 @@
                 :href="userHref"
                 >{{ username || "人字榜800线无名小侠" }}</el-link
             >
+            <span class="u-boxcoin" v-if="total" @click="onBoxcoinClick">
+                <img class="u-boxcoin-img" src="../assets/img/like4.png" alt="">
+                卷面分：<span class="u-boxcoin-num">{{ total }}</span><i class="el-icon-coin"></i>
+            </span>
             <span class="u-mark u-top" v-if="item.is_top"
                 ><i class="el-icon-download"></i>置顶</span
             >
@@ -60,10 +64,10 @@
 <script>
 import ContentOfCommentAndReply from "./comment-and-reply-subcomponents-content.vue";
 import ReplyList from "./comment-and-reply-subcomponents-reply-list.vue";
-import { POST, DELETE, GET } from "../service";
+import { POST, DELETE, GET, getHistorySummary } from "../service";
 import {bus} from "../utils"
 export default {
-    props: ["item", "baseApi", "power", "user-href", "username", "homework"],
+    props: ["item", "baseApi", "power", "user-href", "username", "homework", "postType"],
     components: {
         ContentOfCommentAndReply,
         ReplyList
@@ -76,6 +80,11 @@ export default {
                 pageSize: 10,
                 pageTotal: 1,
                 total: 0
+            },
+
+            summary: {
+                fromManager: 0,
+                fromUser: 0
             }
         };
     },
@@ -89,6 +98,22 @@ export default {
     },
     created() {
         this.replyList = this.item.reply || [];
+    },
+    watch: {
+        item: {
+            deep: true,
+            immediate: true,
+            handler(val) {
+                if (val?.id) {
+                    this.loadHomeworkBoxcoin()
+                }
+            }
+        }
+    },
+    computed: {
+        total() {
+            return this.summary.fromManager + this.summary.fromUser;
+        }
     },
     methods: {
         deleteComment() {
@@ -162,6 +187,15 @@ export default {
         },
         onHomework() {
             bus.emit("homework-click", this.item);
+        },
+        onBoxcoinClick() {
+            bus.emit("boxcoin-click", this.item);
+        },
+        loadHomeworkBoxcoin() {
+            if (!this.homework) return;
+            getHistorySummary(this.postType, this.item.id).then(res => {
+                this.summary = res.data.data;
+            })
         }
     }
 };
@@ -198,6 +232,28 @@ export default {
     }
     .u-secret{
         background-color:#ff99cc;
+    }
+}
+.c-comment-cmt__author {
+    .pr;
+
+    .u-boxcoin {
+        .pa;
+        right: 10px;
+        top: 0;
+        .fz(14px);
+        .flex;
+        align-items: center;
+        gap: 5px;
+        .pointer;
+    }
+
+    .u-boxcoin-img {
+        .size(14px);
+    }
+
+    .u-boxcoin-num{
+        color: #f0b400;
     }
 }
 </style>

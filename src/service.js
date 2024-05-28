@@ -1,6 +1,7 @@
 //import { Notification } from 'element-ui';
 import { __Links, __next } from "@jx3box/jx3box-common/data/jx3box.json"
 import { Notification } from "element-ui"
+import { $pay } from "@jx3box/jx3box-common/js/https"
 
 
 export const GET = function (url, queryParams) {
@@ -12,7 +13,6 @@ export const GET = function (url, queryParams) {
         },
     }
     return __fetch(url, queryParams, options)
-
 }
 
 var postRecord = {}
@@ -151,4 +151,8 @@ function __fetch(url, queryParams, options) {
                 return resp.text()
         }
     })
+}
+
+export const getHistorySummary = (postType, postId) => {
+    return $pay().get(`/api/inspire/article/${postType}/${postId}/history/summary`)
 }

@@ -15,6 +15,12 @@ module.exports = {
                     request.setHeader("origin", "");
                 }
             },
+            "/api": {
+                target: process.env["DEV_SERVER"] == "true" ? "http://localhost:8000" : "https://pay.jx3box.com",
+                onProxyReq: function (request) {
+                    request.setHeader("origin", "");
+                }
+            }
         }
     },
     chainWebpack: config => {
