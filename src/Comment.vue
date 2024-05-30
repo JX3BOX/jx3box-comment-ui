@@ -93,7 +93,7 @@
             </template>
         </el-main>
 
-        <homework v-model="showHomeWork" v-if="homework" :postType="postType" :postId="postData.postId" :client="postData.client" :userId="postData.userId"></homework>
+        <homework v-model="showHomeWork" v-if="homework" :postType="postType" :postId="postData.postId" :client="postData.client" :userId="postData.userId" :article-id="id" :category="category"></homework>
         <boxcoin-records v-model="showBoxCoin" v-if="homework" :postType="postType" :postId="postData.postId" :client="postData.client"></boxcoin-records>
     </el-container>
 </template>
