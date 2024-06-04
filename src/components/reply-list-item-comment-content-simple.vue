@@ -233,6 +233,11 @@ export default {
             }
         }
     }
+    .u-reply-label{
+        .el-link{.fz(12px);}
+        .fz(12px);
+        color:#999;
+    }
     .u-reply-text {
         white-space: pre-line;
     }
