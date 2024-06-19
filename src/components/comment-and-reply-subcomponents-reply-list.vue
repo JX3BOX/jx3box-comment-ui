@@ -44,13 +44,13 @@ export default {
     components: {
         ReplyItem,
     },
-    data: function() {
+    data: function () {
         return {
             showPager: false,
         };
     },
     filters: {
-        profileLink: function(uid) {
+        profileLink: function (uid) {
             return authorLink(uid);
         },
     },
@@ -88,6 +88,8 @@ export default {
     border-top: 1px dashed #eee;
 }
 .c-comment-reply {
+    padding-top: 5px;
+    background-size: cover;
     &:not(:last-of-type) {
         border-bottom: 1px dashed #eee;
         padding-bottom: 10px;
