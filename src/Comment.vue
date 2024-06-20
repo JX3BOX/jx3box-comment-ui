@@ -6,7 +6,11 @@
                 <div class="u-order">
                     <template v-if="homework">
                         <div class="u-homework">
-                            <img class="u-homework-icon" src="./assets/img/homework.svg" alt="">
+                            <img
+                                class="u-homework-icon"
+                                src="./assets/img/homework.svg"
+                                alt=""
+                            />
                             <span>作业模式</span>
                         </div>
                     </template>
@@ -45,14 +49,14 @@
                     :key="item.id"
                     class="c-comment-list"
                 >
-                    <CommentAvatar
+                    <!-- <CommentAvatar
                         :user-avatar="item.avatar | showAvatar"
                         :user-href="item.userId | profileLink"
                         :username="item.displayName"
                         :avatarFrame="item.user_avatar_frame"
                         :withFrame="true"
                         :avatarSize="48"
-                    />
+                    /> -->
                     <CommentAndReply
                         :base-api="baseAPI"
                         :item="item"
@@ -93,21 +97,36 @@
             </template>
         </el-main>
 
-        <homework v-model="showHomeWork" v-if="homework" :postType="postType" :postId="postData.postId" :client="postData.client" :userId="postData.userId" :article-id="id" :category="category"></homework>
-        <boxcoin-records v-model="showBoxCoin" v-if="homework" :postType="postType" :postId="postData.postId" :client="postData.client"></boxcoin-records>
+        <homework
+            v-model="showHomeWork"
+            v-if="homework"
+            :postType="postType"
+            :postId="postData.postId"
+            :client="postData.client"
+            :userId="postData.userId"
+            :article-id="id"
+            :category="category"
+        ></homework>
+        <boxcoin-records
+            v-model="showBoxCoin"
+            v-if="homework"
+            :postType="postType"
+            :postId="postData.postId"
+            :client="postData.client"
+        ></boxcoin-records>
     </el-container>
 </template>
 
 <script>
 import { showAvatar, authorLink } from "@jx3box/jx3box-common/js/utils";
-import CommentAvatar from "./components/avatar.vue";
+// import CommentAvatar from "./components/avatar.vue";
 import CommentInputForm from "./components/comment-input-form.vue";
 import CommentAndReply from "./components/comment-and-reply.vue";
 import { GET, POST, DELETE, PUT } from "./service";
 import { getOrderMode, setOrderMode } from "./options";
 import Homework from "@jx3box/jx3box-common-ui/src/interact/Homework.vue";
 import boxcoinRecords from "./components/boxcoin-records.vue";
-import {bus} from "./utils";
+import { bus } from "./utils";
 export default {
     name: "Comment",
     props: {
@@ -137,11 +156,11 @@ export default {
         },
     },
     components: {
-        CommentAvatar,
+        // CommentAvatar,
         CommentAndReply,
         CommentInputForm,
         Homework,
-        boxcoinRecords
+        boxcoinRecords,
     },
     data: function () {
         return {
@@ -191,9 +210,10 @@ export default {
                 `${this.baseAPI}/meta/white-list/${
                     this.openWhiteList ? "open" : "close"
                 }`
-            ).then(()=>{
-                return this.reloadPower()
-            })
+            )
+                .then(() => {
+                    return this.reloadPower();
+                })
                 .then(() => {
                     this.commentPower.is_white = this.openWhiteList;
                     this.reloadCommentList(this.pager.index);
@@ -308,14 +328,14 @@ export default {
                 })
                 .catch(() => {});
         },
-        reloadPower(){
+        reloadPower() {
             GET(`${this.baseAPI}/i-am-author`)
-                    .then((power) => {
-                        this.commentPower = power;
-                        this.openWhiteList = power.is_white;
-                    })
-                    .catch(() => {});
-        }
+                .then((power) => {
+                    this.commentPower = power;
+                    this.openWhiteList = power.is_white;
+                })
+                .catch(() => {});
+        },
     },
     filters: {
         profileLink: function (uid) {
@@ -334,22 +354,22 @@ export default {
                 this.isDesc = mode;
             })
             .then(() => {
-               this.reloadPower()
+                this.reloadPower();
             })
             .finally(() => {
                 this.reloadCommentList(1);
             });
 
-        bus.on("homework-click", data => {
+        bus.on("homework-click", (data) => {
             this.postData.postId = data.id;
             this.postData.userId = data.userId;
             this.showHomeWork = true;
-        })
+        });
 
-        bus.on("boxcoin-click", data => {
+        bus.on("boxcoin-click", (data) => {
             this.postData.postId = data.id;
             this.showBoxCoin = true;
-        })
+        });
     },
 };
 </script>
@@ -481,7 +501,7 @@ export default {
         align-items: center;
         gap: 5px;
         border: 1px solid #e6a23c;
-        background-color:#fefbc4;
+        background-color: #fefbc4;
         color: #666;
         padding: 2px 4px;
         border-radius: 3px;
@@ -508,7 +528,7 @@ export default {
 }
 @media screen and (max-width: 720px) {
     .c-comment-panel {
-        .u-op{
+        .u-op {
             display: none;
         }
     }

@@ -1,53 +1,87 @@
 <template>
     <div class="c-comment-cmt">
-        <div class="c-comment-cmt__author">
-            <el-link
-                class="u-name"
-                type="primary"
-                target="_blank"
-                :href="userHref"
-                >{{ username || "人字榜800线无名小侠" }}</el-link
-            >
-            <span class="u-boxcoin" v-if="total" @click="onBoxcoinClick">
-                <img class="u-boxcoin-img" src="../assets/img/like4.png" alt="">
-                卷面分：<span class="u-boxcoin-num">{{ total }}</span><i class="el-icon-coin"></i>
-            </span>
-            <span class="u-mark u-top" v-if="item.is_top"
-                ><i class="el-icon-download"></i>置顶</span
-            >
-            <span class="u-mark u-star" v-if="item.is_star"
-                ><i class="el-icon-star-off"></i>精华</span
-            >
-            <span class="u-mark u-secret" v-if="item.is_secret"
-                ><i class="el-icon-cherry"></i>悄悄话</span
-            >
+        <div class="c-comment-cmt__box" :style="decorationStyles">
+            <CommentAvatar
+                :user-avatar="item.avatar | showAvatar"
+                :user-href="item.userId | profileLink"
+                :username="item.displayName"
+                :avatarFrame="item.user_avatar_frame"
+                :withFrame="true"
+                :avatarSize="48"
+            />
+            <div>
+                <div class="c-comment-cmt__author">
+                    <el-link
+                        class="u-name"
+                        type="primary"
+                        target="_blank"
+                        :href="userHref"
+                        >{{ username || "人字榜800线无名小侠" }}</el-link
+                    >
+                    <span
+                        class="u-boxcoin"
+                        v-if="total"
+                        @click="onBoxcoinClick"
+                    >
+                        <img
+                            class="u-boxcoin-img"
+                            src="../assets/img/like4.png"
+                            alt=""
+                        />
+                        卷面分：<span class="u-boxcoin-num">{{ total }}</span
+                        ><i class="el-icon-coin"></i>
+                    </span>
+                    <span class="u-mark u-top" v-if="item.is_top"
+                        ><i class="el-icon-download"></i>置顶</span
+                    >
+                    <span class="u-mark u-star" v-if="item.is_star"
+                        ><i class="el-icon-star-off"></i>精华</span
+                    >
+                    <span class="u-mark u-secret" v-if="item.is_secret"
+                        ><i class="el-icon-cherry"></i>悄悄话</span
+                    >
+                </div>
+                <ContentOfCommentAndReply
+                    :date="item.commentDate"
+                    :content="item.content"
+                    :comment-id="item.id"
+                    :attachments="item.attachments | stringToArray"
+                    :can-delete="power.can_del || power.uid == item.userId"
+                    :can-set-top="
+                        (power.is_author || power.is_editor) && !item.is_top
+                    "
+                    :can-cancel-top="
+                        (power.is_author || power.is_editor) && item.is_top
+                    "
+                    :can-set-star="
+                        !item.is_star && (power.is_author || power.is_editor)
+                    "
+                    :can-cancel-star="
+                        item.is_star && (power.is_author || power.is_editor)
+                    "
+                    :can-add-white="
+                        !item.is_white && power.article_open_white == 1
+                    "
+                    :can-remove-white="
+                        item.is_white &&
+                        (power.is_author == 1 || power.is_editor == 1)
+                    "
+                    :can-hide="power.is_author == 1 || power.is_editor == 1"
+                    :can-approve="power.is_author == 1 || power.is_editor == 1"
+                    :is-like="item.is_likes == 1"
+                    :likes="~~item.likes"
+                    :homework="homework"
+                    @addNewReply="addNewReply"
+                    @deleteComment="deleteComment"
+                    @setTopComment="setTopComment"
+                    @setStarComment="setStarComment"
+                    @setLikeComment="setLikeComment"
+                    @setWhiteComment="setWhiteComment"
+                    @hide="hideComment"
+                    @homework="onHomework"
+                />
+            </div>
         </div>
-        <ContentOfCommentAndReply
-            :date="item.commentDate"
-            :content="item.content"
-            :comment-id="item.id"
-            :attachments="item.attachments | stringToArray"
-            :can-delete="power.can_del || power.uid == item.userId"
-            :can-set-top="(power.is_author || power.is_editor) && !item.is_top"
-            :can-cancel-top="(power.is_author || power.is_editor) && item.is_top"
-            :can-set-star="!item.is_star && (power.is_author || power.is_editor)"
-            :can-cancel-star="item.is_star &&(power.is_author || power.is_editor)"
-            :can-add-white="!item.is_white && power.article_open_white == 1"
-            :can-remove-white="item.is_white && (power.is_author == 1 || power.is_editor == 1)"
-            :can-hide="(power.is_author == 1 || power.is_editor == 1)"
-            :can-approve="(power.is_author == 1 || power.is_editor == 1)" 
-            :is-like="item.is_likes == 1"
-            :likes="~~item.likes"
-            :homework="homework"
-            @addNewReply="addNewReply"
-            @deleteComment="deleteComment"
-            @setTopComment="setTopComment"
-            @setStarComment="setStarComment"
-            @setLikeComment="setLikeComment"
-            @setWhiteComment="setWhiteComment"
-            @hide="hideComment"
-            @homework="onHomework"
-        />
         <ReplyList
             :data="replyList"
             :pager="pager"
@@ -63,42 +97,64 @@
 </template>
 
 <script>
+import { showAvatar, authorLink } from "@jx3box/jx3box-common/js/utils";
 import ContentOfCommentAndReply from "./comment-and-reply-subcomponents-content.vue";
 import ReplyList from "./comment-and-reply-subcomponents-reply-list.vue";
 import { POST, DELETE, GET, getHistorySummary } from "../service";
-import {bus} from "../utils"
+import { bus } from "../utils";
+import CommentAvatar from "@/components/avatar.vue";
+const DECORATION_KEY = "decoration_comment_";
+import { $cms } from "@jx3box/jx3box-common/js/https";
+import { __imgPath } from "@jx3box/jx3box-common/data/jx3box.json";
 export default {
-    props: ["item", "baseApi", "power", "user-href", "username", "homework", "postType"],
+    props: [
+        "item",
+        "baseApi",
+        "power",
+        "user-href",
+        "username",
+        "homework",
+        "postType",
+    ],
     components: {
         ContentOfCommentAndReply,
-        ReplyList
+        ReplyList,
+        CommentAvatar,
     },
-    data: function() {
+    data: function () {
         return {
+            decoration: "",
             replyList: [],
             pager: {
                 index: 1,
                 pageSize: 10,
                 pageTotal: 1,
-                total: 0
+                total: 0,
             },
 
             summary: {
                 fromManager: 0,
-                fromUser: 0
-            }
+                fromUser: 0,
+            },
         };
     },
     filters: {
-        stringToArray: function(str) {
+        stringToArray: function (str) {
             if (!str) {
                 return [];
             }
             return JSON.parse(str);
-        }
+        },
+        showAvatar: function (val) {
+            return showAvatar(val, 84);
+        },
+        profileLink: function (uid) {
+            return authorLink(uid);
+        },
     },
     created() {
         this.replyList = this.item.reply || [];
+        this.getDecoration();
     },
     watch: {
         item: {
@@ -106,21 +162,74 @@ export default {
             immediate: true,
             handler(val) {
                 if (val?.id) {
-                    this.loadHomeworkBoxcoin()
+                    this.loadHomeworkBoxcoin();
                 }
-            }
-        }
+            },
+        },
     },
     computed: {
         total() {
             return this.summary.fromManager + this.summary.fromUser;
-        }
+        },
+        uid() {
+            return this.item.userId;
+        },
+        decorationStyles() {
+            return this.decoration
+                ? {
+                      backgroundImage: `url(${this.decoration})`,
+                      borderRadius: "8px",
+                  }
+                : null;
+        },
     },
     methods: {
+        getDecoration() {
+            let decoration_local = sessionStorage.getItem(
+                DECORATION_KEY + this.uid
+            );
+            if (decoration_local) {
+                //解析本地缓存
+                let decoration_parse = JSON.parse(decoration_local);
+                if (decoration_parse) {
+                    this.decoration =
+                        __imgPath +
+                        `decoration/images/${decoration_parse.val}/comment.png`;
+                    return;
+                }
+            }
+            this.fetchDecoration({
+                using: 1,
+                user_id: this.uid,
+                type: "comment",
+            }).then((res) => {
+                let decorationList = res.data.data;
+                //筛选个人装扮
+                let decoration = decorationList.find(
+                    (item) => item.type == "comment"
+                );
+                if (decoration) {
+                    this.decoration =
+                        __imgPath +
+                        `decoration/images/${decoration.val}/comment.png`;
+                    sessionStorage.setItem(
+                        DECORATION_KEY + this.uid,
+                        JSON.stringify(decoration)
+                    );
+                    return;
+                }
+            });
+        },
+        //获取装扮
+        fetchDecoration(params) {
+            return $cms().get(`/api/cms/user/decoration`, {
+                params: params,
+            });
+        },
         deleteComment() {
             this.$emit("deleteComment", this.item.id);
         },
-        hideComment(){
+        hideComment() {
             this.$emit("hide", this.item.id);
         },
         setTopComment(setTop) {
@@ -135,8 +244,8 @@ export default {
         setLikeReply(id, setLike) {
             this.$emit("setLikeComment", id, setLike);
         },
-        setWhiteComment( white) {
-            this.$emit("setWhiteComment",  this.item.id, white);
+        setWhiteComment(white) {
+            this.$emit("setWhiteComment", this.item.id, white);
         },
         addNewReply(data) {
             POST(`${this.baseApi}/comment/${this.item.id}/reply`, null, data)
@@ -146,7 +255,7 @@ export default {
                         message: "评论成功!",
                         type: "success",
                         duration: 3000,
-                        position: "bottom-right"
+                        position: "bottom-right",
                     });
 
                     this.loadReplyList(this.pager.index);
@@ -161,7 +270,7 @@ export default {
                         message: "删除成功!",
                         type: "success",
                         duration: 3000,
-                        position: "bottom-right"
+                        position: "bottom-right",
                     });
                     this.loadReplyList(this.pager.index);
                 })
@@ -174,7 +283,7 @@ export default {
             GET(
                 `${this.baseApi}/comment/${this.item.id}/reply/page/${index}?pageSize=${pageSize}`
             )
-                .then(resp => {
+                .then((resp) => {
                     if (index == 1 && pageSize == 3) {
                         this.item.reply = resp.data || [];
                     }
@@ -194,17 +303,17 @@ export default {
         },
         loadHomeworkBoxcoin() {
             if (!this.homework) return;
-            getHistorySummary(this.postType, this.item.id).then(res => {
+            getHistorySummary(this.postType, this.item.id).then((res) => {
                 this.summary = res.data.data;
-            })
-        }
-    }
+            });
+        },
+    },
 };
 </script>
 
 <style lang="less">
 .c-comment-cmt {
-    .u-name{
+    .u-name {
         margin-right: 6px;
     }
     .u-mark {
@@ -217,11 +326,10 @@ export default {
         cursor: default;
         display: inline-flex;
         align-items: center;
-
     }
     .u-top {
         background-color: #6f42c1;
-        i{
+        i {
             transform: rotate(180deg);
         }
     }
@@ -231,9 +339,14 @@ export default {
             margin-right: 2px;
         }
     }
-    .u-secret{
-        background-color:#ff99cc;
+    .u-secret {
+        background-color: #ff99cc;
     }
+}
+.c-comment-cmt__box {
+    display: flex;
+    padding-top: 5px;
+    background-size: cover;
 }
 .c-comment-cmt__author {
     .pr;
@@ -253,7 +366,7 @@ export default {
         .size(14px);
     }
 
-    .u-boxcoin-num{
+    .u-boxcoin-num {
         color: #f0b400;
         .bold;
     }
