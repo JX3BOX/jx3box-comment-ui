@@ -102,7 +102,7 @@ import ContentOfCommentAndReply from "./comment-and-reply-subcomponents-content.
 import ReplyList from "./comment-and-reply-subcomponents-reply-list.vue";
 import { POST, DELETE, GET, getHistorySummary } from "../service";
 import { bus } from "../utils";
-import CommentAvatar from "@/components/avatar.vue";
+import CommentAvatar from "./avatar.vue";
 const DECORATION_KEY = "decoration_comment_";
 import { $cms } from "@jx3box/jx3box-common/js/https";
 import { __imgPath } from "@jx3box/jx3box-common/data/jx3box.json";
