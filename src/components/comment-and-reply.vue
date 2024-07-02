@@ -9,7 +9,7 @@
                 :withFrame="true"
                 :avatarSize="48"
             />
-            <div>
+            <div class="u-flex-1">
                 <div class="c-comment-cmt__author">
                     <el-link
                         class="u-name"
@@ -370,5 +370,8 @@ export default {
         color: #f0b400;
         .bold;
     }
+}
+.u-flex-1 {
+    flex: 1;
 }
 </style>
