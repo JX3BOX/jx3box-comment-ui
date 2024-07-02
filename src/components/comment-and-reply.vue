@@ -347,6 +347,9 @@ export default {
     display: flex;
     padding-top: 5px;
     background-size: cover;
+    .u-flex-1 {
+        flex: 1;
+    }
 }
 .c-comment-cmt__author {
     .pr;
@@ -370,8 +373,5 @@ export default {
         color: #f0b400;
         .bold;
     }
-}
-.u-flex-1 {
-    flex: 1;
 }
 </style>
