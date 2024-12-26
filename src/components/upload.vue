@@ -87,10 +87,14 @@ export default {
         },
         onSuccess(response) {
             this.successList = this.successList.concat(response.data);
-            if (this.successList.length == this.fileList.length) {
-                this.$emit("onFinish", this.successList || []);
-                this.fileList = [];
-                this.successList = [];
+            if (response.code === 0) {
+                if (this.successList.length == this.fileList.length) {
+                    this.$emit("onFinish", this.successList || []);
+                    this.fileList = [];
+                    this.successList = [];
+                }
+            } else {
+                this.onError(response.msg);
             }
         },
         onError() {
@@ -103,6 +107,10 @@ export default {
             });
             this.$emit("onError");
             this.fileList = [];
+        },
+        addFile(file) {
+            this.$refs.upload.handleStart(file);
+            return false;
         },
     },
 };
