@@ -105,7 +105,7 @@ import { bus } from "../utils";
 import CommentAvatar from "./avatar.vue";
 const DECORATION_KEY = "decoration_comment_";
 import { $cms } from "@jx3box/jx3box-common/js/https";
-import { __imgPath } from "@jx3box/jx3box-common/data/jx3box.json";
+import { __cdn } from "@jx3box/jx3box-common/data/jx3box.json";
 export default {
     props: [
         "item",
@@ -193,8 +193,8 @@ export default {
                 let decoration_parse = JSON.parse(decoration_local);
                 if (decoration_parse) {
                     this.decoration =
-                        __imgPath +
-                        `decoration/images/${decoration_parse.val}/comment.png`;
+                        __cdn +
+                        `design/decoration/images/${decoration_parse.val}/comment.png`;
                     return;
                 }
             }
@@ -210,8 +210,8 @@ export default {
                 );
                 if (decoration) {
                     this.decoration =
-                        __imgPath +
-                        `decoration/images/${decoration.val}/comment.png`;
+                        __cdn +
+                        `design/decoration/images/${decoration.val}/comment.png`;
                     sessionStorage.setItem(
                         DECORATION_KEY + this.uid,
                         JSON.stringify(decoration)
