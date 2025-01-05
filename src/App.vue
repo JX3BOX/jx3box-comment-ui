@@ -1,7 +1,7 @@
 <template>
-    <Comment id="80449" category="post" order="desc" :homework="true" />
+    <!-- <Comment id="80449" category="post" order="desc" :homework="true" /> -->
     <!-- <Comment id="81964" category="post" order="desc" :homework="true" /> -->
-    <!-- <Comment :id="30015" category="post" order="desc" /> -->
+    <Comment :id="19382" category="post" order="desc" />
 </template>
 
 <script>

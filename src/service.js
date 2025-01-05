@@ -3,6 +3,13 @@ import { __Links, __next } from "@jx3box/jx3box-common/data/jx3box.json"
 import { Notification } from "element-ui"
 import { $pay } from "@jx3box/jx3box-common/js/https"
 
+// 从url中获取参数
+function getUrlParam(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    return r ? decodeURIComponent(r[2]) : null;
+}
+
 
 export const GET = function (url, queryParams) {
     let options = {
@@ -95,6 +102,15 @@ function __fetch(url, queryParams, options) {
         }
         url = url + "?" + queryQueue.join("&")
     }
+
+    // 设置认证头
+    let token = getUrlParam("__token");
+    token = token ? token : (localStorage && localStorage.getItem("token"));
+    if (token) {
+        const credentials = btoa(token + ':' + 'next common request');
+        options.headers["Authorization"] = "Basic " + credentials
+    }
+
     return fetch(url, options).then((resp) => {
         switch (resp.status) {
             case 200:
