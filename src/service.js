@@ -108,6 +108,9 @@ function __fetch(url, queryParams, options) {
     token = token ? token : (localStorage && localStorage.getItem("token"));
     if (token) {
         const credentials = btoa(token + ':' + 'next common request');
+        if (!options.headers) {
+            options.headers = {}
+        }
         options.headers["Authorization"] = "Basic " + credentials
     }
 
