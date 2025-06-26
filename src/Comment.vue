@@ -348,6 +348,12 @@ export default {
     created() {
         this.baseAPI = `/api/comment/${this.category}/article/${this.id}`;
     },
+    watch: {
+        id: function (newId) {
+            this.baseAPI = `/api/comment/${this.category}/article/${newId}`;
+            this.reloadCommentList(1);
+        }
+    },
     mounted() {
         getOrderMode()
             .then((mode) => {
