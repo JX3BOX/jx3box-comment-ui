@@ -1,5 +1,5 @@
 <template>
-    <el-container class="c-comment" v-loading="loading">
+    <el-container class="c-comment" :class="{ 'c-comment-mask': showMask }" v-loading="loading">
         <el-main>
             <CommentInputForm @submit="userSubmitInputForm" />
             <div class="c-comment-panel">
@@ -119,6 +119,7 @@
 
 <script>
 import { showAvatar, authorLink } from "@jx3box/jx3box-common/js/utils";
+import { getConfig } from "@jx3box/jx3box-common/js/api_misc"
 // import CommentAvatar from "./components/avatar.vue";
 import CommentInputForm from "./components/comment-input-form.vue";
 import CommentAndReply from "./components/comment-and-reply.vue";
@@ -127,6 +128,7 @@ import { getOrderMode, setOrderMode } from "./options";
 import Homework from "@jx3box/jx3box-common-ui/src/interact/Homework.vue";
 import boxcoinRecords from "./components/boxcoin-records.vue";
 import { bus } from "./utils";
+import User from "@jx3box/jx3box-common/js/user";
 export default {
     name: "Comment",
     props: {
@@ -189,6 +191,8 @@ export default {
                 client: location.href.includes("origin") ? "origin" : "std",
             },
             showBoxCoin: false,
+
+            showMask: false
         };
     },
     computed: {
@@ -366,6 +370,16 @@ export default {
                 this.reloadCommentList(1);
             });
 
+        getConfig({
+            key: "comment_strict"
+        }).then(res => {
+            if (res.data.data.val == 1) {
+                if (User.isLogin()) {
+                    this.showMask = User.getInfo().group < 16;
+                }
+            }
+        })
+
         bus.on("homework-click", (data) => {
             this.postData.postId = data.id;
             this.postData.userId = data.userId;
@@ -388,6 +402,11 @@ export default {
     }
     .el-icon-circle-close {
         color: #fff !important;
+    }
+}
+.c-comment-mask {
+    .u-mask {
+        display: block;
     }
 }
 .u-uploader {
