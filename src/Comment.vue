@@ -407,6 +407,7 @@ export default {
 .c-comment-mask {
     .u-mask {
         display: block;
+        font-size: 13px;
     }
 }
 .u-uploader {
